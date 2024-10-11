@@ -1,7 +1,7 @@
 ---
 theme: seriph
 background: https://cover.sli.dev
-title: My Presentation Template
+title: Java x Spring Boot製アプリケーションのコールドスタートに立ち向かう！
 class: text-center
 drawings:
   persist: false
@@ -11,11 +11,13 @@ hideInToc: true
 lineNumbers: true
 ---
 
-# My Presentation Template
+## Java x Spring Boot製アプリケーションのコールドスタートに立ち向かう！
 
-20yy/mm/dd presentation for XXXX
+## 〜暖機運転のアプローチいろいろやってみた〜
 
-@kazu_kichi_67
+2024/10/27 Presentation for JJUG CCC 2024 Fall
+
+菊地 和真@kazu_kichi_67
 
 <div class="abs-br m-6 flex gap-2">
   <a href="https://x.com/kazu_kichi_67" target="_blank" alt="X" title="Open in X"
