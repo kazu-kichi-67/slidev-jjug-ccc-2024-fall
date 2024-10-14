@@ -1,4 +1,11 @@
-# Welcome to [Slidev](https://github.com/slidevjs/slidev)!
+# Presentation Slide for JJUG CCC 2024 Fall 
+
+Event Page:
+https://jjug.doorkeeper.jp/events/177443
+
+Theme: Java Warm-up
+
+## Usage
 
 To start the slide show:
 

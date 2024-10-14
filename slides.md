@@ -241,5 +241,3 @@ hideInToc: true
 ---
 
 # End
-
-<PoweredBySlidev mt-10 />
