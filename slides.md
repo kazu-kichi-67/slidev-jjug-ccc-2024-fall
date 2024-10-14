@@ -1,5 +1,6 @@
 ---
 theme: seriph
+colorSchema: light
 background: https://cover.sli.dev
 title: Java x Spring Boot製アプリケーションのコールドスタートに立ち向かう！
 class: text-center
@@ -14,6 +15,8 @@ lineNumbers: true
 ## Java x Spring Boot製アプリケーションのコールドスタートに立ち向かう！
 
 ## 〜暖機運転のアプローチいろいろやってみた〜
+
+<br>
 
 2024/10/27 Presentation for JJUG CCC 2024 Fall
 
@@ -53,8 +56,10 @@ layout: section
 # Section1
 
 ---
+level: 2
+---
 
-## List Sample
+# List Sample
 
 ***
 
@@ -75,8 +80,10 @@ layout: section
 </style>
 
 ---
+level: 2
+---
 
-## Table Sample
+# Table Sample
 
 ***
 
@@ -109,8 +116,10 @@ layout: section
 # Section2
 
 ---
+level: 2
+---
 
-## Code Sample
+# Code Sample
 
 ***
 
@@ -131,8 +140,10 @@ pre.slidev-code {
 </style>
 
 ---
+level: 2
+---
 
-## Diagrams Sample
+# Diagrams Sample
 
 ***
 
@@ -209,8 +220,10 @@ database "MySql" {
 </div>
 
 ---
+level: 2
+---
 
-## Tips
+# Tips
 
 ***
 
