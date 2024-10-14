@@ -9,8 +9,7 @@ hideInToc: true
 <div class="grid grid-cols-[30%_70%] gap-4">
 
 <div>
-<img src="/camp.png" width="240" height="240"/>
-<img src="/QR_X.png" width="240" height="240"/>
+<img src="/camp.png" />
 </div>
 
 <div>

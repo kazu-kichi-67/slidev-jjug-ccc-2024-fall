@@ -53,20 +53,19 @@ hideInToc: true
 
 ***
 
-<br>
 <Toc maxDepth="2"/>
 
 ---
 layout: section
 ---
 
-# Section1
+# なぜ暖機運転が必要なのか？
 
 ---
 level: 2
 ---
 
-# List Sample
+# コールドスタートとは何か？
 
 ***
 
@@ -74,63 +73,57 @@ level: 2
 
 <v-clicks>
 
-- aaa
-- bbb
-- ccc
+- スタートアップ（起動するまでの時間）+ ウォームアップ（ピークパフォーマンスに達するまでの時間）
+- クラスのロード + JITによる最適化
+- コンテナやサーバレスの普及によって、恩恵よりもデメリットが目立つようになった
 
 </v-clicks>
 
-<style>
-  ul {
-    font-size: 18pt;
-  }
-</style>
+<br>
 
+<div class="grid grid-cols-2 gap-4">
+
+<div v-click>
+
+```mermaid {scale: 1.0}
 ---
-level: 2
+title: Node
 ---
+flowchart LR
+    id(スタートアップ) --> id2(ウォームアップ)
+```
 
-# Table Sample
-
-***
-
-Table Sample.
-
-|        |                              |
-| ------ | ---------------------------- |
-| AAAAAA | aaa                          |
-| BBB    | bbbbbbbb                     |
-| C      | <kbd>ccccccccccccccccc</kbd> |
-
----
-layout: section
----
-
-<div id="highlight-contents">
-highlight!!!
 </div>
 
-<style>
-  #highlight-contents {
-    font-size: 72pt;
-  }
-</style>
+<div v-click >
+
+```mermaid {scale: 0.5}
+xychart-beta
+  title "一般的なレイテンシーの遷移"
+  x-axis "Request" 0 --> 10
+  y-axis "Time"
+  line [1, 0.3, 0.25, 0.2, 0.18, 0.17, 0.16, 0.16, 0.15, 0.15]
+```
+
+</div>
+
+</div>
 
 ---
 layout: section
 ---
 
-# Section2
+# 暖機運転のアプローチ
 
 ---
 level: 2
 ---
 
-# Code Sample
+# 繰り返し呼べるように環境を整える
 
 ***
 
-code sample.
+<br>
 
 ```java {*|3|2-4|1,5|*}
 class HelloWorld {
@@ -140,106 +133,184 @@ class HelloWorld {
 }
 ```
 
-<style>
-pre.slidev-code {
-    background-color: #1f2020;
-}
-</style>
+<br>
+
+### メリット
+
+- ほげ
+
+<br>
+
+### デメリット
+
+- ほげ
 
 ---
 level: 2
 ---
 
-# Diagrams Sample
+# 特殊ルートの実装
 
 ***
 
-diagrams sample.
+<br>
 
-<div class="grid grid-cols-4 gap-5 pt-4 -mb-6">
-
-```mermaid {scale: 0.5, alt: 'A simple sequence diagram'}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
+```java {*|3|2-4|1,5|*}
+class HelloWorld {
+	public static void main(String[] args) {
+		System.out.println("Hello, world.");
+	}
+}
 ```
 
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
+<br>
 
-```mermaid
-mindmap
-  root((mindmap))
-    Origins
-      Long history
-      ::icon(fa fa-book)
-      Popularisation
-        British popular psychology author Tony Buzan
-    Research
-      On effectiveness<br/>and features
-      On Automatic creation
-        Uses
-            Creative techniques
-            Strategic planning
-            Argument mapping
-    Tools
-      Pen and paper
-      Mermaid
-```
+### メリット
 
-```plantuml {scale: 0.7}
-@startuml
+- ほげ
 
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
+<br>
 
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
+### デメリット
 
-cloud {
-  [Example 1]
-}
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-```
-
-</div>
+- ほげ
 
 ---
 level: 2
 ---
 
-# Tips
+# Dynamic Dependency Injection
 
 ***
 
-The <span v-mark.red><code>code</code> directive</span>
-also allows you to add
-<span v-mark.circle.orange>inline marks</span>
-, powered by [Link](https://roughnotation.com/)
+<br>
 
-<logos-java class="text-7xl m-3 absolute right-20" />
+```java {*|3|2-4|1,5|*}
+class HelloWorld {
+	public static void main(String[] args) {
+		System.out.println("Hello, world.");
+	}
+}
+```
+
+<br>
+
+### メリット
+
+- ほげ
+
+<br>
+
+### デメリット
+
+- ほげ
+
+---
+level: 2
+---
+
+# Dynamic Data Source
+
+***
+
+<br>
+
+```java {*|3|2-4|1,5|*}
+class HelloWorld {
+	public static void main(String[] args) {
+		System.out.println("Hello, world.");
+	}
+}
+```
+
+<br>
+
+### メリット
+
+- ほげ
+
+<br>
+
+### デメリット
+
+- ほげ
+
+---
+layout: section
+---
+
+# 暖機運転以外のアプローチ
+
+
+---
+level: 2
+---
+
+# Class Data Sharing（CDS）
+
+***
+
+<br>
+
+- ほげ
+
+---
+level: 2
+---
+
+# Native化（GraalVM）
+
+***
+
+<br>
+
+- AOTコンパイル
+
+---
+level: 2
+---
+
+# Coordinated Restore at Checkpoint(CRaC)
+
+***
+
+<br>
+
+- ほげ
+
+---
+level: 2
+---
+
+# Project Leyden
+
+***
+
+<br>
+
+- ほげ
+
+---
+
+# まとめ
+
+***
+
+<br>
+
+- ほげ
+
+---
+hideInToc: true
+---
+
+参考
+
+|        |                              |
+| ------ | ---------------------------- |
+| AAAAAA | aaa                          |
+| BBB    | bbbbbbbb                     |
+| C      | <kbd>ccccccccccccccccc</kbd> |
 
 ---
 layout: center
@@ -248,3 +319,7 @@ hideInToc: true
 ---
 
 # End
+
+良いJava Lifeを！
+
+<img src="/QR_X.png" width="240" height="240"/>
