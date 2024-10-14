@@ -34,6 +34,13 @@ lineNumbers: true
 </div>
 
 ---
+layout: section
+hideInToc: true
+---
+
+TODO: 資料のQR
+
+---
 src: ./pages/who-am-i.md
 hide: false
 ---
