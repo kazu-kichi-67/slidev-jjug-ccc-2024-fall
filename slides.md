@@ -59,10 +59,28 @@ hideInToc: true
 layout: section
 ---
 
-# なぜ暖機運転が必要なのか？
+# 本題に入る前の準備
 
 ---
 level: 2
+hideInToc: true
+---
+
+# 背景
+
+***
+
+<br>
+
+- Java 21
+- Spring Boot 3.2
+- Amazon EKS（Elastic Kubernetes Service）上で動く
+- Onion Architecture
+- ECサイトにおける注文システムのバックエンドAPI
+
+---
+level: 2
+hideInToc: true
 ---
 
 # コールドスタートとは何か？
@@ -71,43 +89,83 @@ level: 2
 
 <br>
 
-<v-clicks>
+- スタートアップ：アプリケーションが起動するまでの時間
+- <span v-mark.red>ウォームアップ：ピークパフォーマンスに達するまでの時間</span>
+- スタートアップ + ウォームアップ => コールドスタート
 
-- スタートアップ（起動するまでの時間）+ ウォームアップ（ピークパフォーマンスに達するまでの時間）
-- クラスのロード + JITによる最適化
-- コンテナやサーバレスの普及によって、恩恵よりもデメリットが目立つようになった
+---
+level: 2
+hideInToc: true
+---
 
-</v-clicks>
+# ウォームアップの段階
+
+***
 
 <br>
 
-<div class="grid grid-cols-2 gap-4">
+- <span v-mark.red>初回リクエスト特有の遅延</span>：1回のリクエストでそこそこ効く
+- JITコンパイラ（Just In Time Compile）による最適化：数千回のリクエストで少しずつ効いてくる
 
-<div v-click>
-
-```mermaid {scale: 1.0}
----
-title: Node
----
-flowchart LR
-    id(スタートアップ) --> id2(ウォームアップ)
-```
-
-</div>
-
-<div v-click >
+<br>
 
 ```mermaid {scale: 0.5}
+---
+config:
+  xyChart:
+    xAxis:
+      showLabel: false
+    yAxis:
+      showLabel: false
+---
 xychart-beta
-  title "一般的なレイテンシーの遷移"
+  title "レイテンシーの遷移イメージ"
   x-axis "Request" 0 --> 10
-  y-axis "Time"
-  line [1, 0.3, 0.25, 0.2, 0.18, 0.17, 0.16, 0.16, 0.15, 0.15]
+  y-axis "Time" 0 --> 1
+  line [1, 0.2, 0.19, 0.18, 0.17, 0.16, 0.15, 0.15, 0.15, 0.15]
 ```
 
-</div>
+---
+level: 2
+hideInToc: true
+---
 
-</div>
+# ウォームアップの重要性
+
+***
+
+<br>
+
+- アプリケーションの生存時間は短くなっている
+  - コンテナやサーバレスの普及
+    - Podの再起動、オートスケールアップ
+  - アジャイル開発による、高速なリリースサイクル
+- <span v-mark.red>恩恵よりもデメリットが目立つようになってきた</span>
+
+---
+level: 2
+hideInToc: true
+---
+
+# どうやって暖機するのか？
+
+***
+
+<br>
+
+- <span v-mark.red>実際にAPIを呼び出してから、ユーザーのリクエストを受け付ける</span>
+  - 例えば、、
+  - Spring Boot Actuatorでアプリケーションの状態を可視化
+  - kubernetesのStartup Probeでリクエストを投げる
+- 参照系は比較的容易、では<span v-mark.circle.orange>更新系</span>は？
+
+<br>
+
+### 参考
+
+[Liveness and Readiness Probes with Spring Boot](https://spring.io/blog/2020/03/25/liveness-and-readiness-probes-with-spring-boot)
+
+[Liveness, Readiness, and Startup Probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/)
 
 ---
 layout: section
@@ -123,27 +181,25 @@ level: 2
 
 ***
 
-<br>
+注文APIについて考えてみる
 
-```java {*|3|2-4|1,5|*}
-class HelloWorld {
-	public static void main(String[] args) {
-		System.out.println("Hello, world.");
-	}
-}
-```
+<v-clicks>
 
-<br>
+- 暖機用のユーザ、商品を準備する
+- 自動で注文をキャンセルする仕組みが必要
+- キャンセルを繰り返すユーザに対して罰則があればその対象外とする
+- 検索に載せないなど、一般ユーザには買えない仕組みが欲しい
+- 計測や分析側への影響も考慮する必要あり
 
-### メリット
-
-- ほげ
+</v-clicks>
 
 <br>
 
-### デメリット
+<v-click>
 
-- ほげ
+- ❌ めっちゃつらい！！
+
+</v-click>
 
 ---
 level: 2
@@ -153,27 +209,28 @@ level: 2
 
 ***
 
-<br>
-
-```java {*|3|2-4|1,5|*}
-class HelloWorld {
-	public static void main(String[] args) {
-		System.out.println("Hello, world.");
-	}
+```java {*|1-2|3|4|5-6|7-9|*}
+@Repository
+public class OrderRepositoryImpl implements OrderRepository {
+	public OrderId create(Order order) {
+    if (order.userId().isWarmup()) {
+      // 暖機運転用の特殊ルート
+      return OrderId.ofWarmup();
+    } else {
+      // 注文作成
+    }
+  } 
 }
 ```
 
-<br>
+<v-clicks>
 
-### メリット
+- ⭕️ 小規模かつ、暫定であれば・・??
+- 🔺 暖機効果がやや低い
+- ❌ 実装・メンテナンスコスト大
+- ❌ ドメインモデルに余計な関心ごとが入り込む
 
-- ほげ
-
-<br>
-
-### デメリット
-
-- ほげ
+</v-clicks>
 
 ---
 level: 2
@@ -183,27 +240,30 @@ level: 2
 
 ***
 
-<br>
+```java {*|1,3|2,4-5|7-12|9|11|*}
+@Configuration
+@RequiredArgsConstructor
+public class WarmupConfiguration {
+  private final BeanFactory beanFactory;
+  private final WarmupService warmupService;
 
-```java {*|3|2-4|1,5|*}
-class HelloWorld {
-	public static void main(String[] args) {
-		System.out.println("Hello, world.");
+  @Bean
+  @Primary
+  @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
+	public OrderRepository orderRepository() {
+		return beanFactory.getBean(warmupService.getMode() + "OrderRepository", OrderRepository.class);
 	}
 }
 ```
 
-<br>
+<v-clicks>
 
-### メリット
+- ⭕️ 暖機の関心ごとが散らばらない
+- 🔺 暖機効果がやや低い
+- 🔺 実装・メンテナンスコスト中
+- ❌ 都度DIされることによる性能懸念
 
-- ほげ
-
-<br>
-
-### デメリット
-
-- ほげ
+</v-clicks>
 
 ---
 level: 2
@@ -215,25 +275,84 @@ level: 2
 
 <br>
 
-```java {*|3|2-4|1,5|*}
-class HelloWorld {
-	public static void main(String[] args) {
-		System.out.println("Hello, world.");
+```java {*|3|6-7|8|*}
+@Component
+@RequiredArgsConstructor
+public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
+  private final WarmupService warmupService;
+
+  @Override
+  protected Object determineCurrentLookupKey() {
+		return warmupService.getMode();
 	}
 }
 ```
 
+---
+level: 2
+hideInToc: true
+---
+
+# Dynamic Data Source
+
+***
+
 <br>
 
-### メリット
+```java {*|3|11-13|15-16|*}
+@Configuration
+@RequiredArgsConstructor
+public class DynamicDataSourceConfiguration {
+  private final DynamicRoutingDataSource dynamicRoutingDataSource;
 
-- ほげ
+  ・・・
+
+  @Bean
+  @Primary
+	public DataSource dataSource() {
+    Map<Object, DataSource> dataSources = new LinkedHashMap<>();
+    dataSources.put(WarmupMode.PROD, prodDataSource());
+    dataSources.put(WarmupMode.WARMUP, warmupDataSource());
+
+    dynamicRoutingDataSource.setTargetDataSources(dataSources);
+    dynamicRoutingDataSource.setDefaultTargetDataSource(prodDataSource());
+
+		return dynamicRoutingDataSource;
+	}
+}
+```
+
+---
+level: 2
+hideInToc: true
+---
+
+# Dynamic Data Source
+
+***
 
 <br>
 
-### デメリット
+<v-clicks>
 
-- ほげ
+- ⭕️ データを自由に準備できるため、暖機の自由度は高い
+- ⭕️ 暖機効果が高い
+- ⭕️ 実装・メンテナンスコスト小
+- ❌ 都度DIされることによる性能懸念
+- ❌ インフラの整備が必要
+- ❌ 接続先が切り替わらなかった場合の事故リスク
+
+</v-clicks>
+
+<br>
+
+<v-click>
+
+### 結論
+
+- どのアプローチもデメリット（痛み）を伴う
+
+</v-click>
 
 ---
 layout: section
@@ -252,7 +371,9 @@ level: 2
 
 <br>
 
-- ほげ
+- [JEP 310: Application Class-Data Sharing](https://openjdk.org/jeps/310)
+- [JEP 341: Default CDS Archives](https://openjdk.org/jeps/341)
+- [JEP 350: Dynamic CDS Archives](https://openjdk.org/jeps/350)
 
 ---
 level: 2
@@ -264,19 +385,27 @@ level: 2
 
 <br>
 
-- AOTコンパイル
+- AOTコンパイル（Ahead of Time Compile）
+- 起動時間は非常に早い
+- 対応ライブラリが限られる
+- 導入のハードルが高い
+- コンパイルに時間がかかる
+- 最適化されないため、トップパフォーマンスはJITにやや劣る
 
 ---
 level: 2
 ---
 
-# Coordinated Restore at Checkpoint(CRaC)
+# CRaC(Coordinated Restore at Checkpoint)
 
 ***
 
 <br>
 
-- ほげ
+- AWS LambdaのSnapStartで活用されている
+- Linux KernelのCheckpoint/Restore in Userspace（CRIU）を利用するため、実行環境に依存する
+- adoptium/temurin-buildでは未対応
+  - [Including CRac for container image](https://github.com/adoptium/temurin-build/issues/3604)
 
 ---
 level: 2
@@ -288,7 +417,7 @@ level: 2
 
 <br>
 
-- ほげ
+- [Project Leyden](https://openjdk.org/projects/leyden/)
 
 ---
 
@@ -298,19 +427,9 @@ level: 2
 
 <br>
 
-- ほげ
-
----
-hideInToc: true
----
-
-参考
-
-|        |                              |
-| ------ | ---------------------------- |
-| AAAAAA | aaa                          |
-| BBB    | bbbbbbbb                     |
-| C      | <kbd>ccccccccccccccccc</kbd> |
+- 暖機運転を行うのが望ましい
+- <span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
+- Javaの今後のバージョンアップにも注目!!
 
 ---
 layout: center
@@ -320,6 +439,8 @@ hideInToc: true
 
 # End
 
+Thank you for listening!
+
 良いJava Lifeを！
 
-<img src="/QR_X.png" width="240" height="240"/>
+<img src="/QR_X.png"/>
