@@ -38,7 +38,7 @@ layout: section
 hideInToc: true
 ---
 
-TODO: 資料のQR
+TODO: ハッシュタグのQR
 
 ---
 src: ./pages/who-am-i.md
@@ -59,7 +59,7 @@ hideInToc: true
 layout: section
 ---
 
-# 本題に入る前の準備
+# 本題に入る前に準備
 
 ---
 level: 2
@@ -77,6 +77,68 @@ hideInToc: true
 - Amazon EKS（Elastic Kubernetes Service）上で動く
 - Onion Architecture
 - ECサイトにおける注文システムのバックエンドAPI
+
+---
+layout: section
+hideInToc: true
+---
+
+<div id="highlight">
+なんか、最初のリクエストだけ<br>
+異常に遅くない・・？？
+</div>
+
+---
+layout: section
+hideInToc: true
+---
+
+<div id="highlight">
+地味に困ってる人多い気がするけど、
+情報少なくない・・？？
+</div>
+
+---
+layout: section
+hideInToc: true
+---
+
+<div id="highlight">
+よし、登壇しよう！！
+</div>
+
+---
+level: 2
+hideInToc: true
+---
+
+# モチベーション
+
+***
+
+<br>
+
+### 話すこと
+
+- なぜ遅いのか？（簡単に）
+- 暖機運転のアプローチ
+- Javaが提供するアプローチ
+
+<br>
+
+### 話さないこと
+
+- 各アプローチの詳細な説明
+- パフォーマンス問題に対する銀の弾丸
+- 背景によって最適解は異なるため、各々で計測・検証をお願いします🙏
+
+<br>
+
+<v-click>
+
+### → 最初のアイデア出しの一助になれば幸いです
+
+</v-click>
 
 ---
 level: 2
@@ -105,7 +167,11 @@ hideInToc: true
 <br>
 
 - <span v-mark.red>初回リクエスト特有の遅延</span>：1回のリクエストでそこそこ効く
-- JITコンパイラ（Just In Time Compile）による最適化：数千回のリクエストで少しずつ効いてくる
+- JITコンパイラ（Just In Time Compile）による最適化：一般的にC1で数千、C2で3万回程度のリクエストが必要
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
 
 <br>
 
@@ -113,10 +179,16 @@ hideInToc: true
 ---
 config:
   xyChart:
+    titleFontSize: 30
     xAxis:
       showLabel: false
+      titleFontSize: 30
     yAxis:
       showLabel: false
+      titleFontSize: 30
+  themeVariables:
+    xyChart:
+      plotColorPalette: "#146b8c"
 ---
 xychart-beta
   title "レイテンシーの遷移イメージ"
@@ -124,6 +196,24 @@ xychart-beta
   y-axis "Time" 0 --> 1
   line [1, 0.2, 0.19, 0.18, 0.17, 0.16, 0.15, 0.15, 0.15, 0.15]
 ```
+
+</div>
+
+<div>
+
+出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
+
+<img src="/Java_Runtime_Lifecycle.png"/>
+
+</div>
+
+</div>
+
+<style>
+p {
+    font-size: 10pt
+}
+</style>
 
 ---
 level: 2
@@ -181,7 +271,9 @@ level: 2
 
 ***
 
-注文APIについて考えてみる
+<br>
+
+### 注文APIについて考えてみる
 
 <v-clicks>
 
@@ -386,11 +478,11 @@ level: 2
 <br>
 
 - AOTコンパイル（Ahead of Time Compile）
-- 起動時間は非常に早い
-- 対応ライブラリが限られる
-- 導入のハードルが高い
-- コンパイルに時間がかかる
-- 最適化されないため、トップパフォーマンスはJITにやや劣る
+- ⭕️ 起動時間
+- ⭕️ パフォーマンス
+- ❌ 対応ライブラリが限られる
+- ❌ 導入のハードルが高い
+- ❌ コンパイルに時間がかかる
 
 ---
 level: 2
