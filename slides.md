@@ -41,8 +41,14 @@ hideInToc: true
 
 <img src="/QR_JJUG.png"/>
 
+<!-- https://twitter.com/search?q=%23jjug_ccc%20%23jjug_ccc_J -->
+
 <br>
 
+<kbd id="highlight">[#jjug_ccc](https://twitter.com/search?q=%23jjug_ccc)</kbd>
+<br>
+<br>
+<br>
 <kbd id="highlight">[#jjug_ccc_J](https://twitter.com/search?q=%23jjug_ccc_J)</kbd>
 
 ---
