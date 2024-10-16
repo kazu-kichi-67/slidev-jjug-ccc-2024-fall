@@ -34,11 +34,16 @@ lineNumbers: true
 </div>
 
 ---
-layout: section
+layout: center
+class: text-center
 hideInToc: true
 ---
 
-TODO: ハッシュタグのQR
+<img src="/QR_JJUG.png"/>
+
+<br>
+
+<kbd id="highlight">[#jjug_ccc_J](https://twitter.com/search?q=%23jjug_ccc_J)</kbd>
 
 ---
 src: ./pages/who-am-i.md
