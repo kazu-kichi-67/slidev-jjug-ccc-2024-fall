@@ -89,6 +89,9 @@ hideInToc: true
 - Onion Architecture
 - ECサイトにおける注文システムのバックエンドAPI
 
+<logos-java class="text-7xl m-5 absolute right-60"/>
+<logos-spring class="text-9xl m-0 absolute right-20"/>
+
 ---
 layout: section
 hideInToc: true
@@ -533,6 +536,8 @@ level: 2
 - 暖機運転を行うのが望ましい
 - <span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
 - Javaの今後のバージョンアップにも注目!!
+
+<logos-java class="text-9xl m-5 absolute right-20 animate-ping"/>
 
 ---
 layout: center
