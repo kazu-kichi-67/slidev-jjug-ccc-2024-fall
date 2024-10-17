@@ -41,7 +41,7 @@ hideInToc: true
 
 <img src="/QR_JJUG.png"/>
 
-<!-- https://twitter.com/search?q=%23jjug_ccc%20%23jjug_ccc_J -->
+<!-- https://twitter.com/search?q=%23jjug_ccc%20%23jjug_ccc_j -->
 
 <br>
 
@@ -49,7 +49,7 @@ hideInToc: true
 <br>
 <br>
 <br>
-<kbd id="highlight">[#jjug_ccc_J](https://twitter.com/search?q=%23jjug_ccc_J)</kbd>
+<kbd id="highlight">[#jjug_ccc_j](https://twitter.com/search?q=%23jjug_ccc_j)</kbd>
 
 ---
 src: ./pages/who-am-i.md
@@ -89,8 +89,7 @@ hideInToc: true
 - Onion Architecture
 - ECサイトにおける注文システムのバックエンドAPI
 
-<logos-java class="text-7xl m-5 absolute right-60"/>
-<logos-spring class="text-9xl m-0 absolute right-20"/>
+<img src="/Duke.png" width="150" height="200" class="absolute right-20"/>
 
 ---
 layout: section
@@ -183,11 +182,11 @@ hideInToc: true
 - <span v-mark.red>初回リクエスト特有の遅延</span>：1回のリクエストでそこそこ効く
 - JITコンパイラ（Just In Time Compile）による最適化：一般的にC1で数千、C2で3万回程度のリクエストが必要
 
+<br>
+
 <div class="grid grid-cols-2 gap-4">
 
 <div>
-
-<br>
 
 ```mermaid {scale: 0.5}
 ---
@@ -215,9 +214,9 @@ xychart-beta
 
 <div>
 
-出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
-
 <img src="/Java_Runtime_Lifecycle.png"/>
+
+出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
 
 </div>
 
@@ -537,7 +536,7 @@ level: 2
 - <span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
 - Javaの今後のバージョンアップにも注目!!
 
-<logos-java class="text-9xl m-5 absolute right-20 animate-ping"/>
+<img src="/Wave.png" width="150" height="200" class="absolute right-20"/>
 
 ---
 layout: center
