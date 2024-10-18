@@ -179,7 +179,7 @@ hideInToc: true
 
 <br>
 
-- <span v-mark.red>初回リクエスト特有の遅延</span>：1回のリクエストでそこそこ効く
+- <span v-mark.red>初回リクエスト特有の遅延：1回のリクエストでそこそこ効く</span>
 - JITコンパイラ（Just In Time Compile）による最適化：一般的にC1で数千、C2で3万回程度のリクエストが必要
 
 <br>
@@ -370,6 +370,14 @@ public class WarmupConfiguration {
 
 </v-clicks>
 
+<div class="absolute right-15 bottom-33">
+
+[Interface BeanFactory](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/BeanFactory.html)
+<br>
+[Bean Scopes](https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html)
+
+</div>
+
 ---
 level: 2
 ---
@@ -392,6 +400,8 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 	}
 }
 ```
+
+[Class AbstractRoutingDataSource](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/datasource/lookup/AbstractRoutingDataSource.html)
 
 ---
 level: 2
@@ -477,8 +487,14 @@ level: 2
 <br>
 
 - [JEP 310: Application Class-Data Sharing](https://openjdk.org/jeps/310)
+  - Java 10で導入された、手動でアーカイブを作成する仕組み
+  - class listの作成 → アーカイブ作成(dump) → アーカイブを使用して起動
 - [JEP 341: Default CDS Archives](https://openjdk.org/jeps/341)
+  - Java 12で導入された、ユーザの操作なしにデフォルトでCDSが有効になる機能
 - [JEP 350: Dynamic CDS Archives](https://openjdk.org/jeps/350)
+  - Java 13で導入された、動的にアーカイブを作成する仕組み
+- 🔺 いずれも起動時間の改善を目標としたもの
+- ❌ CI/CDのリリースサイクルに載せるのが難しい
 
 ---
 level: 2
@@ -490,12 +506,14 @@ level: 2
 
 <br>
 
-- AOTコンパイル（Ahead of Time Compile）
+- AOTコンパイル（Ahead of Time Compile）: 事前にネイティブコードにコンパイルする
 - ⭕️ 起動時間
 - ⭕️ パフォーマンス
 - ❌ 対応ライブラリが限られる
-- ❌ 導入のハードルが高い
-- ❌ コンパイルに時間がかかる
+  - [Libraries and Frameworks Tested with Native Image](https://www.graalvm.org/native-image/libraries-and-frameworks/)
+- ❌ コンパイルに時間がかかり、開発体験が変わる
+- ❌ アプリケーションの規模などにもよるが、移行のハードルは高いと感じる
+  - リフレクションのように実行時に決まる要素については、コンパイル時に明示的に指定する必要がある 等
 
 ---
 level: 2
@@ -507,10 +525,15 @@ level: 2
 
 <br>
 
+- アプリケーションのチェックポイントを作成し、復元する形で起動できる
 - AWS LambdaのSnapStartで活用されている
-- Linux KernelのCheckpoint/Restore in Userspace（CRIU）を利用するため、実行環境に依存する
-- adoptium/temurin-buildでは未対応
-  - [Including CRac for container image](https://github.com/adoptium/temurin-build/issues/3604)
+- ⭕️ 起動時間
+- ⭕️ パフォーマンス(継続してJITコンパイルの最適化が行われる)
+- 🔺 チェックポイント作成時にDB接続やファイルハンドルを閉じる必要がある
+- ❌ シークレットな情報がスナップショットに含まれるリスクがある
+- ❌ Linux KernelのCheckpoint/Restore in Userspace（CRIU）を利用するため、実行環境に依存する
+- 現時点だと、[OpenJDKのEAビルド](https://wiki.openjdk.org/display/crac)、[Azul JDKの一部](https://wiki.openjdk.org/display/crac)、[Liberica JDK](https://bell-sw.com/libericajdk-with-crac/)のみ
+- adoptium/temurin-buildでは未対応 - [Including CRac for container image](https://github.com/adoptium/temurin-build/issues/3604)
 
 ---
 level: 2
@@ -523,6 +546,21 @@ level: 2
 <br>
 
 - [Project Leyden](https://openjdk.org/projects/leyden/)
+- 起動時間、ピークパフォーマンスまでの時間、メモリの改善を目指している
+- CDS + AOTのようなアプローチ
+- [Leyden Early Access Release](https://github.com/openjdk/leyden/blob/leyden-ea1-release-notes/README.md)
+- [JEP 483: Ahead-of-Time Class Loading & Linking](https://openjdk.org/jeps/483)
+- [JEP draft: Unified Ahead-of-Time Cache](https://openjdk.org/jeps/8320264)
+- [JEP draft: Ahead-of-Time Method Profiling](https://openjdk.org/jeps/8325147)
+- [JEP draft: Ahead-of-Time Code Compilation](https://openjdk.org/jeps/8335368)
+
+<br>
+
+<v-click>
+
+### → 銀の弾丸となりうるか？　要注目!!
+
+</v-click>
 
 ---
 
