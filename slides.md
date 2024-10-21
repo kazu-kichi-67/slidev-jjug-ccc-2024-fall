@@ -57,16 +57,6 @@ hide: false
 ---
 
 ---
-hideInToc: true
----
-
-# Agenda
-
-***
-
-<Toc maxDepth="2"/>
-
----
 layout: section
 ---
 
@@ -83,13 +73,17 @@ hideInToc: true
 
 <br>
 
+- ECサイトにおけるカート決済システムのリプレイス案件
 - Java 21
-- Spring Boot 3.2
-- Amazon EKS（Elastic Kubernetes Service）上で動く
+- Spring Boot 3系
+- Amazon EKS（Elastic Kubernetes Service）
+- Domain-Driven Design
 - Onion Architecture
-- ECサイトにおける注文システムのバックエンドAPI
+- バックエンドのAPIアプリケーション
 
-<img src="/Duke.png" width="150" height="200" class="absolute right-20"/>
+<img src="/Duke.png" width="150" height="200" class="absolute right-20 bottom-10"/>
+
+<!-- 開発を進めて終盤戦、負荷試験を行ったところ、気づいちゃいました。 -->
 
 ---
 layout: section
@@ -100,6 +94,8 @@ hideInToc: true
 なんか、最初のリクエストだけ<br>
 異常に遅くない・・？？
 </div>
+
+<!-- 調べてみるとコールドスタートと言うらしい、、 -->
 
 ---
 layout: section
@@ -117,6 +113,7 @@ hideInToc: true
 ---
 
 <div id="highlight">
+「情報は発信する人に集まる」<br>
 よし、登壇しよう！！
 </div>
 
@@ -125,7 +122,7 @@ level: 2
 hideInToc: true
 ---
 
-# モチベーション
+# アジェンダ
 
 ***
 
@@ -133,9 +130,9 @@ hideInToc: true
 
 ### 話すこと
 
-- なぜ遅いのか？（簡単に）
-- 暖機運転のアプローチ
-- Javaが提供するアプローチ
+- コールドスタートと暖機運転について
+- 自力で頑張る暖機運転のアプローチ
+- ランタイムが提供するアプローチ
 
 <br>
 
@@ -144,6 +141,8 @@ hideInToc: true
 - 各アプローチの詳細な説明
 - パフォーマンス問題に対する銀の弾丸
 - 背景によって最適解は異なるため、各々で計測・検証をお願いします🙏
+
+<!-- 全体像を俯瞰することで、最初の調査・検討ステップの短縮になれば幸いです -->
 
 ---
 level: 2
@@ -159,6 +158,8 @@ hideInToc: true
 - スタートアップ：アプリケーションが起動するまでの時間
 - <span v-mark.red>ウォームアップ：ピークパフォーマンスに達するまでの時間</span>
 - スタートアップ + ウォームアップ => コールドスタート
+
+<!-- エンジンが温まりきる前までの時間をコールドスタートと呼ぶ -->
 
 ---
 level: 2
@@ -220,6 +221,8 @@ p {
 }
 </style>
 
+<!-- 極限まで性能を求められるようなユースケースでない場合は、数回程度のリクエストでも満足できることが多いです -->
+
 ---
 level: 2
 hideInToc: true
@@ -237,6 +240,8 @@ hideInToc: true
   - アジャイル開発による、高速なリリースサイクル
 - <span v-mark.red>恩恵よりもデメリットが目立つようになってきた</span>
 
+<!-- 特に最近重要性が増してるって話 -->
+
 ---
 level: 2
 hideInToc: true
@@ -248,7 +253,7 @@ hideInToc: true
 
 <br>
 
-- <span v-mark.red>実際にAPIを呼び出してから、ユーザーのリクエストを受け付ける</span>
+- <span v-mark.red>ユーザーからのリクエストを受け付ける前に、実際にAPIを呼び出してあげる</span>
   - 例えば、、
   - Spring Boot Actuatorでアプリケーションの状態を可視化
   - kubernetesのStartup Probeでリクエストを投げる
@@ -262,11 +267,14 @@ hideInToc: true
 
 [Liveness, Readiness, and Startup Probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/)
 
+<!-- 参照系：検索や商品詳細<br>
+冪等性 -->
+
 ---
 layout: section
 ---
 
-# 自前で頑張るアプローチ
+# 自力で頑張るアプローチ
 
 ---
 level: 2
@@ -291,6 +299,8 @@ level: 2
 
 </v-clicks>
 
+<!-- ノイズ！ -->
+
 ---
 layout: section
 hideInToc: true
@@ -314,7 +324,7 @@ level: 2
 
 ### コードサンプル
 
-```java {*|1-2|3|4|5-6|7-9|*}
+```java {*|1-2|3|7-9|4-6|*}
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
 	public OrderId create(Order order) {
@@ -420,7 +430,7 @@ hideInToc: true
 
 ### 一言メモ
 
-- こちらもずっと保守していくのは厳しい・・<br>コードを消しやすいので、こちらも暫定的な導入に留めましょう
+- こちらもずっと保守していくのは厳しい・・<br>コードは消しやすいので、こちらも暫定的な導入に留めましょう
 
 </v-click>
 
@@ -450,6 +460,8 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 ```
 
 [Class AbstractRoutingDataSource](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/datasource/lookup/AbstractRoutingDataSource.html)
+
+<!-- 自前でシャーディングする時とかに使ってる模様 -->
 
 ---
 level: 2
@@ -515,7 +527,7 @@ hideInToc: true
 
 ### 一言メモ
 
-- ややトリッキーではあるが、構築さえできれば色々なユースケースに対応できそう
+- ややトリッキーではあるが、インフラ構築さえできれば色々なユースケースに対応できそう
 
 </v-click>
 
@@ -551,8 +563,9 @@ hideInToc: true
 layout: section
 ---
 
-# ランタイムの機能を使った<br>アプローチ
+# ランタイムが提供するアプローチ
 
+<!-- Javaとしても長年コールドスタートに対して課題感を持っていました -->
 
 ---
 level: 2
@@ -572,7 +585,7 @@ level: 2
 - [JEP 350: Dynamic CDS Archives](https://openjdk.org/jeps/350)
   - Java 13で導入された、動的にアーカイブを作成する仕組み
 - 🔺 いずれも起動時間の改善を目標としたもの
-- ❌ CI/CDのリリースサイクルを見直す必要がある
+- 🔺 CI/CDのリリースサイクルを見直す必要がある
 
 ---
 level: 2
@@ -587,10 +600,10 @@ level: 2
 - AOTコンパイル（Ahead of Time Compile）: 事前にネイティブコードにコンパイルする
 - ⭕️ 起動時間
 - ⭕️ パフォーマンス
-- ❌ 利用しているライブラリがちゃんと動くかは要検証
+- 🔺 利用しているライブラリがちゃんと動くかは要検証
   - [Libraries and Frameworks Tested with Native Image](https://www.graalvm.org/native-image/libraries-and-frameworks/)
-- ❌ コンパイルに時間がかかり、開発体験が変わる
-- ❌ アプリケーションの規模などにもよるが、移行のハードルは高いと感じる
+- 🔺 コンパイルに時間がかかり、開発体験が変わる
+- ❌ アプリケーションの規模などにもよるが、移行のハードルは高め
   - リフレクションのように実行時に決まる要素については、コンパイル時に明示的に指定する必要がある 等
 
 ---
@@ -608,9 +621,9 @@ level: 2
 - ⭕️ 起動時間
 - ⭕️ パフォーマンス(継続してJITコンパイルの最適化が行われる)
 - 🔺 チェックポイント作成時にDB接続やファイルハンドルを閉じる必要がある
-- ❌ シークレットな情報がスナップショットに含まれるリスクがある
+- 🔺 シークレットな情報がスナップショットに含まれるリスクがある
 - ❌ Linux KernelのCheckpoint/Restore in Userspace（CRIU）を利用するため、実行環境に依存する
-- 現時点だと、[OpenJDKのEAビルド](https://wiki.openjdk.org/display/crac)、[Azul JDKの一部](https://wiki.openjdk.org/display/crac)、[Liberica JDK](https://bell-sw.com/libericajdk-with-crac/)のみ
+- 現時点だと、[OpenJDKのEAビルド](https://wiki.openjdk.org/display/crac)、[Azul JDKの一部](https://wiki.openjdk.org/display/crac)、[Liberica JDK](https://bell-sw.com/libericajdk-with-crac/)で利用可能
 - adoptium/temurin-buildでは未対応 - [Including CRac for container image](https://github.com/adoptium/temurin-build/issues/3604)
 
 ---
@@ -652,11 +665,11 @@ level: 2
 - <span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
 - Javaの今後のバージョンアップにも注目!!
 
-現時点ではクリティカルなタイムアウト等は発生していないため、<br>
-いざという時の手札を揃えておきつつ、<br>
-CRaCやProject Leydenの動向をチェックしている状況です。
-
 <img src="/Wave.png" width="150" height="200" class="absolute right-20 bottom-10"/>
+
+<!-- 現時点ではクリティカルなタイムアウト等は発生していないため、<br>
+いざという時の手札を揃えておきつつ、<br>
+CRaCやProject Leydenの動向をチェックしている状況です。 -->
 
 ---
 layout: center
