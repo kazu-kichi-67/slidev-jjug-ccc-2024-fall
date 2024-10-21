@@ -145,14 +145,6 @@ hideInToc: true
 - パフォーマンス問題に対する銀の弾丸
 - 背景によって最適解は異なるため、各々で計測・検証をお願いします🙏
 
-<br>
-
-<v-click>
-
-### → 最初のアイデア出しの一助になれば幸いです
-
-</v-click>
-
 ---
 level: 2
 hideInToc: true
@@ -179,8 +171,8 @@ hideInToc: true
 
 <br>
 
-- <span v-mark.red>初回リクエスト特有の遅延：1回のリクエストでそこそこ効く</span>
-- JITコンパイラ（Just In Time Compile）による最適化：一般的にC1で数千、C2で3万回程度のリクエストが必要
+- <span v-mark.red>初回リクエスト特有の遅延： 1回のリクエストでそこそこ効く</span>
+- JITコンパイラ（Just In Time Compile）による最適化： 一般的にC1で数千、C2で3万回程度のリクエストが必要
 
 <br>
 
@@ -274,7 +266,7 @@ hideInToc: true
 layout: section
 ---
 
-# 暖機運転のアプローチ
+# 自前で頑張るアプローチ
 
 ---
 level: 2
@@ -295,16 +287,20 @@ level: 2
 - キャンセルを繰り返すユーザに対して罰則があればその対象外とする
 - 検索に載せないなど、一般ユーザには買えない仕組みが欲しい
 - 計測や分析側への影響も考慮する必要あり
+- などなど・・・
 
 </v-clicks>
 
-<br>
+---
+layout: section
+hideInToc: true
+---
 
-<v-click>
+<div id="highlight">
 
-- ❌ めっちゃつらい！！
+❌ めっちゃつらい🤮
 
-</v-click>
+</div>
 
 ---
 level: 2
@@ -313,6 +309,10 @@ level: 2
 # 特殊ルートの実装
 
 ***
+
+<br>
+
+### コードサンプル
 
 ```java {*|1-2|3|4|5-6|7-9|*}
 @Repository
@@ -328,14 +328,37 @@ public class OrderRepositoryImpl implements OrderRepository {
 }
 ```
 
+---
+level: 2
+hideInToc: true
+---
+
+# 特殊ルートの実装
+
+***
+
+<br>
+
+### Pros/Cons
+
 <v-clicks>
 
-- ⭕️ 小規模かつ、暫定であれば・・??
-- 🔺 暖機効果がやや低い
+- ⭕️ 最も手軽ですぐに始められる
+- 🔺 特殊ルートから先は暖機されないため、その分効果が小さい
 - ❌ 実装・メンテナンスコスト大
-- ❌ ドメインモデルに余計な関心ごとが入り込む
+  - ビジネスロジック（ドメインモデル）に余計な関心ごとが入り込む
 
 </v-clicks>
+
+<br>
+
+<v-click>
+
+### 一言メモ
+
+- 本当にクリティカルな時、小規模かつ暫定的に導入するにとどめましょう
+
+</v-click>
 
 ---
 level: 2
@@ -344,6 +367,10 @@ level: 2
 # Dynamic Dependency Injection
 
 ***
+
+<br>
+
+### コードサンプル
 
 ```java {*|1,3|2,4-5|7-12|9|11|*}
 @Configuration
@@ -361,22 +388,41 @@ public class WarmupConfiguration {
 }
 ```
 
+[Interface BeanFactory](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/BeanFactory.html)
+
+[Bean Scopes](https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html)
+
+---
+level: 2
+hideInToc: true
+---
+
+# Dynamic Dependency Injection
+
+***
+
+<br>
+
+### Pros/Cons
+
 <v-clicks>
 
-- ⭕️ 暖機の関心ごとが散らばらない
-- 🔺 暖機効果がやや低い
+- ⭕️ 暖機の関心ごとをクラス毎に切り離せる
+- 🔺 切り替えたクラスから先のコードが異なるため、その分効果が小さい
 - 🔺 実装・メンテナンスコスト中
-- ❌ 都度DIされることによる性能懸念
+- ❌ 該当クラスが呼び出される度にDIされる
 
 </v-clicks>
 
-<div class="absolute right-15 bottom-33">
-
-[Interface BeanFactory](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/BeanFactory.html)
 <br>
-[Bean Scopes](https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html)
 
-</div>
+<v-click>
+
+### 一言メモ
+
+- こちらもずっと保守していくのは厳しい・・<br>コードを消しやすいので、こちらも暫定的な導入に留めましょう
+
+</v-click>
 
 ---
 level: 2
@@ -387,6 +433,8 @@ level: 2
 ***
 
 <br>
+
+### コードサンプル①
 
 ```java {*|3|6-7|8|*}
 @Component
@@ -413,6 +461,8 @@ hideInToc: true
 ***
 
 <br>
+
+### コードサンプル②
 
 ```java {*|3|11-13|15-16|*}
 @Configuration
@@ -448,16 +498,44 @@ hideInToc: true
 
 <br>
 
+### Pros/Cons
+
 <v-clicks>
 
-- ⭕️ データを自由に準備できるため、暖機の自由度は高い
-- ⭕️ 暖機効果が高い
+- ⭕️ データを自由に準備できるため、暖機の自由度が高い
+- ⭕️ 暖機効果が大きい
 - ⭕️ 実装・メンテナンスコスト小
-- ❌ 都度DIされることによる性能懸念
 - ❌ インフラの整備が必要
-- ❌ 接続先が切り替わらなかった場合の事故リスク
 
 </v-clicks>
+
+<br>
+
+<v-click>
+
+### 一言メモ
+
+- ややトリッキーではあるが、構築さえできれば色々なユースケースに対応できそう
+
+</v-click>
+
+---
+level: 2
+hideInToc: true
+---
+
+# 前半のまとめ
+
+***
+
+<br>
+
+|                          | 特殊ルート | Dynamic Dependency Injection |   Dynamic Data Source    |
+| ------------------------ | ---------- | ---------------------------- | ------------------------ |
+| 暖機効果                 | 🔺 中       | 🔺 中                         | ⭕️ 大                    |
+| 実装・メンテナンスコスト | ❌ 大       | 🔺 中                         | ⭕️ 小                    |
+| その他                   | ⭕️ 手軽    | ⭕️ クラス毎に切り替え可能    | ⭕️ 暖機の自由度が高い    |
+|                          |            | ❌ 都度DIあり                 | ❌ インフラ整備の必要あり |
 
 <br>
 
@@ -473,7 +551,7 @@ hideInToc: true
 layout: section
 ---
 
-# 暖機運転以外のアプローチ
+# ランタイムの機能を使った<br>アプローチ
 
 
 ---
@@ -494,7 +572,7 @@ level: 2
 - [JEP 350: Dynamic CDS Archives](https://openjdk.org/jeps/350)
   - Java 13で導入された、動的にアーカイブを作成する仕組み
 - 🔺 いずれも起動時間の改善を目標としたもの
-- ❌ CI/CDのリリースサイクルに載せるのが難しい
+- ❌ CI/CDのリリースサイクルを見直す必要がある
 
 ---
 level: 2
@@ -509,7 +587,7 @@ level: 2
 - AOTコンパイル（Ahead of Time Compile）: 事前にネイティブコードにコンパイルする
 - ⭕️ 起動時間
 - ⭕️ パフォーマンス
-- ❌ 対応ライブラリが限られる
+- ❌ 利用しているライブラリがちゃんと動くかは要検証
   - [Libraries and Frameworks Tested with Native Image](https://www.graalvm.org/native-image/libraries-and-frameworks/)
 - ❌ コンパイルに時間がかかり、開発体験が変わる
 - ❌ アプリケーションの規模などにもよるが、移行のハードルは高いと感じる
@@ -574,7 +652,11 @@ level: 2
 - <span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
 - Javaの今後のバージョンアップにも注目!!
 
-<img src="/Wave.png" width="150" height="200" class="absolute right-20"/>
+現時点ではクリティカルなタイムアウト等は発生していないため、<br>
+いざという時の手札を揃えておきつつ、<br>
+CRaCやProject Leydenの動向をチェックしている状況です。
+
+<img src="/Wave.png" width="150" height="200" class="absolute right-20 bottom-10"/>
 
 ---
 layout: center
