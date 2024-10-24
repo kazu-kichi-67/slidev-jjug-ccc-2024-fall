@@ -577,15 +577,60 @@ level: 2
 
 <br>
 
+### Java
+
 - [JEP 310: Application Class-Data Sharing](https://openjdk.org/jeps/310)
   - Java 10で導入された、手動でアーカイブを作成する仕組み
-  - class listの作成 → アーカイブ作成(dump) → アーカイブを使用して起動
 - [JEP 341: Default CDS Archives](https://openjdk.org/jeps/341)
   - Java 12で導入された、ユーザの操作なしにデフォルトでCDSが有効になる機能
 - [JEP 350: Dynamic CDS Archives](https://openjdk.org/jeps/350)
-  - Java 13で導入された、動的にアーカイブを作成する仕組み
-- 🔺 いずれも起動時間の改善を目標としたもの
-- 🔺 CI/CDのリリースサイクルを見直す必要がある
+  - Java 13で導入された、アプリケーション終了時にアーカイブを作成してくれる仕組み
+
+<br>
+
+### Spring Boot
+
+- [Class Data Sharing](https://docs.spring.io/spring-boot/reference/packaging/class-data-sharing.html)
+  - <kbd>spring.context.exit=onRefresh</kbd> は3.2以降、<kbd>jarmode=tools extract</kbd> は3.3以降で利用可能
+
+---
+level: 2
+hideInToc: true
+---
+
+# Class Data Sharing（CDS）
+
+***
+
+<br>
+
+<img src="/Java_Runtime_Lifecycle.png" width="600" height="400"/>
+
+出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
+
+<!-- Class Loadingに効く -->
+
+---
+level: 2
+hideInToc: true
+---
+
+# Class Data Sharing（CDS）
+
+***
+
+<br>
+
+### Pros/Cons
+
+- ⭕️ 起動時間の削減
+- ⭕️ 初回リクエストの遅延の緩和
+- ⭕️ 制限事項が少なく、導入コストは低め
+- 🔺 ピークパフォーマンスに達するまでの時間へのアプローチではない
+- 🔺 後述のアプローチに比べると効果は控えめ
+  - 実体験で30%程度の削減効果でした
+
+<!-- 最初に試す価値はある -->
 
 ---
 level: 2
@@ -597,14 +642,54 @@ level: 2
 
 <br>
 
+### [GraalVM](https://www.graalvm.org/)
+
 - AOTコンパイル（Ahead of Time Compile）: 事前にネイティブコードにコンパイルする
-- ⭕️ 起動時間
-- ⭕️ パフォーマンス
+
+<br>
+
+### Spring Boot
+
+- [Introducing GraalVM Native Images](https://docs.spring.io/spring-boot/reference/packaging/native-image/introducing-graalvm-native-images.html)
+  - 3.0以降で利用可能
+
+---
+level: 2
+hideInToc: true
+---
+
+# Native化（GraalVM）
+
+***
+
+<br>
+
+<img src="/Java_Runtime_Lifecycle.png" width="600" height="400"/>
+
+出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
+
+<!-- コンパイル状態からスタート<br>profile-guided optimizations (PGO) を使うことで、C2と遜色ないスループットを出す場合もある -->
+
+---
+level: 2
+hideInToc: true
+---
+
+# Native化（GraalVM）
+
+***
+
+<br>
+
+### Pros/Cons
+
+- ⭕️ 起動時間の大幅な削減
+- ⭕️ 起動直後からピークパフォーマンス
 - 🔺 利用しているライブラリがちゃんと動くかは要検証
   - [Libraries and Frameworks Tested with Native Image](https://www.graalvm.org/native-image/libraries-and-frameworks/)
 - 🔺 コンパイルに時間がかかり、開発体験が変わる
 - ❌ アプリケーションの規模などにもよるが、移行のハードルは高め
-  - リフレクションのように実行時に決まる要素については、コンパイル時に明示的に指定する必要がある 等
+  - リフレクションのように実行時に決まる要素については、コンパイル時に明示的に指定する必要がある
 
 ---
 level: 2
@@ -616,15 +701,64 @@ level: 2
 
 <br>
 
-- アプリケーションのチェックポイントを作成し、復元する形で起動できる
-- AWS LambdaのSnapStartで活用されている
-- ⭕️ 起動時間
-- ⭕️ パフォーマンス(継続してJITコンパイルの最適化が行われる)
+### Java
+
+- [CRaC Project](https://wiki.openjdk.org/display/crac)、[CRaC/docs](https://github.com/CRaC/docs)
+  - アプリケーションのチェックポイントを作成し、復元する形で起動できる
+  - 現時点だと、[OpenJDKのEAビルド](https://wiki.openjdk.org/display/crac)、[Azul JDKの一部](https://wiki.openjdk.org/display/crac)、[Liberica JDK](https://bell-sw.com/libericajdk-with-crac/)で利用可能
+
+<br>
+
+### Spring Boot
+
+- [Checkpoint and Restore With the JVM](https://docs.spring.io/spring-boot/reference/packaging/checkpoint-restore.html#packaging.checkpoint-restore)
+  - <kbd>spring.context.checkpoint=onRefresh</kbd> は3.2以降で利用可能
+
+<br>
+
+### 活用事例
+
+- [SnapStart で AWS Lambda 関数の Java コールドスタートを削減する](https://aws.amazon.com/jp/blogs/news/reducing-java-cold-starts-on-aws-lambda-functions-with-snapstart/)
+
+---
+level: 2
+hideInToc: true
+---
+
+# CRaC(Coordinated Restore at Checkpoint)
+
+***
+
+<br>
+
+<img src="/Java_Runtime_Lifecycle.png" width="600" height="400"/>
+
+出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
+
+<!-- チェックポイントからの復元 -->
+
+
+---
+level: 2
+hideInToc: true
+---
+
+# CRaC(Coordinated Restore at Checkpoint)
+
+***
+
+<br>
+
+### Pros/Cons
+
+- ⭕️ 起動時間の大幅な削減
+- ⭕️ ピークパフォーマンスに達するまでの時間
+  - チェックポイントの作成タイミングに依存する
 - 🔺 チェックポイント作成時にDB接続やファイルハンドルを閉じる必要がある
 - 🔺 シークレットな情報がスナップショットに含まれるリスクがある
 - ❌ Linux KernelのCheckpoint/Restore in Userspace（CRIU）を利用するため、実行環境に依存する
-- 現時点だと、[OpenJDKのEAビルド](https://wiki.openjdk.org/display/crac)、[Azul JDKの一部](https://wiki.openjdk.org/display/crac)、[Liberica JDK](https://bell-sw.com/libericajdk-with-crac/)で利用可能
-- adoptium/temurin-buildでは未対応 - [Including CRac for container image](https://github.com/adoptium/temurin-build/issues/3604)
+
+<!-- ライフサイクルが複雑になり、CI/CDに組み込む難易度が高い -->
 
 ---
 level: 2
@@ -636,22 +770,22 @@ level: 2
 
 <br>
 
+### Java
+
 - [Project Leyden](https://openjdk.org/projects/leyden/)
-- 起動時間、ピークパフォーマンスまでの時間、メモリの改善を目指している
-- CDS + AOTのようなアプローチ
+  - CDS + AOTのようなアプローチ
+  - 起動時間、ピークパフォーマンスまでの時間、メモリの改善を目指している
 - [Leyden Early Access Release](https://github.com/openjdk/leyden/blob/leyden-ea1-release-notes/README.md)
-- [JEP 483: Ahead-of-Time Class Loading & Linking](https://openjdk.org/jeps/483)
-- [JEP draft: Unified Ahead-of-Time Cache](https://openjdk.org/jeps/8320264)
-- [JEP draft: Ahead-of-Time Method Profiling](https://openjdk.org/jeps/8325147)
-- [JEP draft: Ahead-of-Time Code Compilation](https://openjdk.org/jeps/8335368)
 
 <br>
 
 <v-click>
 
-### → 有力な選択肢になりそう。　今後の動向に要注目!!
+### → 有力な選択肢になりそう。　今後の動向に注目!!
 
 </v-click>
+
+<!-- Native化やCRaCのような副作用を極力なくし、利用しやすいものを目指している -->
 
 ---
 
@@ -662,8 +796,8 @@ level: 2
 <br>
 
 - 暖機運転は可能な限り行うのが望ましい。<br>しかし、自力で頑張るのは痛みが伴う場合があるので、<br><span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
-- コールドスタートに対するランタイムのアプローチは複数存在するが、<br>こちらもそれぞれ<span v-mark.circle.orange>制約</span>があるため、状況に応じて選択する
-- Javaの今後の進化にも期待したい！！
+- コールドスタートに対するランタイムのアプローチは複数存在するが、<br>こちらもそれぞれ<span v-mark.circle.orange>制約</span>があるため、しっかりと見極めた上で選択する
+- Javaの今後の進化に期待しましょう！！
 
 <img src="/Wave.png" width="150" height="200" class="absolute right-20 bottom-10"/>
 
