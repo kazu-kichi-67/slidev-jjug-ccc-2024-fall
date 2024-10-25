@@ -604,7 +604,7 @@ hideInToc: true
 
 <br>
 
-<img src="/Java_Runtime_Lifecycle.png" width="600" height="400"/>
+<img src="/Java_Runtime_Lifecycle_CDS.png" width="600" height="400"/>
 
 出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
 
@@ -653,6 +653,8 @@ level: 2
 - [Introducing GraalVM Native Images](https://docs.spring.io/spring-boot/reference/packaging/native-image/introducing-graalvm-native-images.html)
   - 3.0以降で利用可能
 
+<!-- 以前Spring Nativeというプロジェクトがあって、それだと2.6.3でも対応していた -->
+
 ---
 level: 2
 hideInToc: true
@@ -664,7 +666,7 @@ hideInToc: true
 
 <br>
 
-<img src="/Java_Runtime_Lifecycle.png" width="600" height="400"/>
+<img src="/Java_Runtime_Lifecycle_AOT.png" width="600" height="400"/>
 
 出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
 
@@ -691,6 +693,8 @@ hideInToc: true
 - ❌ アプリケーションの規模などにもよるが、移行のハードルは高め
   - リフレクションのように実行時に決まる要素については、コンパイル時に明示的に指定する必要がある
 
+<!-- 時間短縮オプション (-Ob) とデフォルト (-O2) <br>手元の環境では、Hello Worldレベルのコード（2分）が54秒ぐらいになった -->
+
 ---
 level: 2
 ---
@@ -705,7 +709,7 @@ level: 2
 
 - [CRaC Project](https://wiki.openjdk.org/display/crac)、[CRaC/docs](https://github.com/CRaC/docs)
   - アプリケーションのチェックポイントを作成し、復元する形で起動できる
-  - 現時点だと、[OpenJDKのEAビルド](https://wiki.openjdk.org/display/crac)、[Azul JDKの一部](https://wiki.openjdk.org/display/crac)、[Liberica JDK](https://bell-sw.com/libericajdk-with-crac/)で利用可能
+  - 現時点だと、Azul Zulu、Liberica JDKで利用可能
 
 <br>
 
@@ -731,12 +735,11 @@ hideInToc: true
 
 <br>
 
-<img src="/Java_Runtime_Lifecycle.png" width="600" height="400"/>
+<img src="/Java_Runtime_Lifecycle_CRaC.png" width="600" height="400"/>
 
 出典元: https://shipilev.net/talks/j1-Oct2011-21682-benchmarking.pdf
 
 <!-- チェックポイントからの復元 -->
-
 
 ---
 level: 2
@@ -757,6 +760,7 @@ hideInToc: true
 - 🔺 チェックポイント作成時にDB接続やファイルハンドルを閉じる必要がある
 - 🔺 シークレットな情報がスナップショットに含まれるリスクがある
 - ❌ Linux KernelのCheckpoint/Restore in Userspace（CRIU）を利用するため、実行環境に依存する
+  - CRIUの特権操作が必要になる
 
 <!-- ライフサイクルが複雑になり、CI/CDに組み込む難易度が高い -->
 
@@ -773,7 +777,7 @@ level: 2
 ### Java
 
 - [Project Leyden](https://openjdk.org/projects/leyden/)
-  - CDS + AOTのようなアプローチ
+  - CDSと事前最適化 (AOT optimization) を活用したアプローチ
   - 起動時間、ピークパフォーマンスまでの時間、メモリの改善を目指している
 - [Leyden Early Access Release](https://github.com/openjdk/leyden/blob/leyden-ea1-release-notes/README.md)
 
