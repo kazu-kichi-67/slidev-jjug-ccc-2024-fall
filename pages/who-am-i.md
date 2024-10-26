@@ -2,7 +2,7 @@
 hideInToc: true
 ---
 
-# Who am i?
+# 自己紹介
 
 ***
 
@@ -15,10 +15,10 @@ hideInToc: true
 <div>
 <br>
 
-- <mdi-account-circle /> **Name** - 菊地 和真@kazu_kichi_67
+- <mdi-account-circle /> **Name** - @kazu_kichi_67
 - <carbon-book /> **Company** - 中堅独立系SIer
-- <carbon-bookmark /> **Skills** - Java / Spring Boot / Scrum Master / DDD / Clean Architecture / etc..
-- <carbon-bar /> **Hobby** - フットサル, スノボ, 爬虫類, キャンプ, サウナ, ウイスキー, クラフトビール
+- <carbon-bookmark /> **Skills** - Java / Spring Boot / Scrum Master / DDD <br>/ Clean Architecture / etc..
+- <carbon-bar /> **Hobby** - フットサル / 爬虫類 / キャンプ / サウナ <br>/ ウイスキー / クラフトビール / etc..
 
 </div>
 </div>

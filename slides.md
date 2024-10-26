@@ -20,7 +20,7 @@ lineNumbers: true
 
 2024/10/27 Presentation for JJUG CCC 2024 Fall
 
-菊地 和真@kazu_kichi_67
+@kazu_kichi_67
 
 <div class="abs-br m-6 flex gap-2">
   <a href="https://x.com/kazu_kichi_67" target="_blank" alt="X" title="Open in X"
@@ -83,8 +83,6 @@ hideInToc: true
 
 <img src="/Duke.png" width="150" height="200" class="absolute right-20 bottom-10"/>
 
-<!-- 開発を進めて終盤戦、負荷試験を行ったところ、気づいちゃいました。 -->
-
 ---
 layout: section
 hideInToc: true
@@ -95,8 +93,6 @@ hideInToc: true
 異常に遅くない・・？？
 </div>
 
-<!-- 調べてみるとコールドスタートと言うらしい、、 -->
-
 ---
 layout: section
 hideInToc: true
@@ -104,7 +100,7 @@ hideInToc: true
 
 <div id="highlight">
 地味に困ってる人多い気がするけど、
-情報少なくない・・？？
+情報少ないな・・
 </div>
 
 ---
@@ -131,7 +127,7 @@ hideInToc: true
 ### 話すこと
 
 - コールドスタートと暖機運転について
-- <span v-mark.red>自力で頑張る暖機運転のアプローチ</span>
+- 自力で頑張る暖機運転のアプローチ
 - ランタイムが提供するアプローチ
 
 <br>
@@ -142,7 +138,7 @@ hideInToc: true
 - コールドスタート問題に対する銀の弾丸
 - <span v-mark.red>背景によって最適解は異なるため、各々で計測・検証をお願いします🙏</span>
 
-<!-- 全体像を俯瞰することで、最初の調査・検討ステップの短縮になれば幸いです -->
+<!-- このセッションでは、まずは手札を揃えていただいて、それぞれが最適なカードを選ぶ第一歩になっていただけたら幸いです -->
 
 ---
 level: 2
@@ -158,8 +154,6 @@ hideInToc: true
 - スタートアップ：アプリケーションが起動するまでの時間
 - <span v-mark.red>ウォームアップ：ピークパフォーマンスに達するまでの時間</span>
 - スタートアップ + ウォームアップ => コールドスタート
-
-<!-- エンジンが温まりきる前までの時間をコールドスタートと呼ぶ -->
 
 ---
 level: 2
@@ -221,8 +215,6 @@ p {
 }
 </style>
 
-<!-- 極限まで性能を求められるようなユースケースでない場合は、数回程度のリクエストでも満足できることが多いです -->
-
 ---
 level: 2
 hideInToc: true
@@ -240,7 +232,7 @@ hideInToc: true
   - アジャイル開発による、高速なリリースサイクル
 - <span v-mark.red>恩恵よりもデメリットが目立つようになってきた</span>
 
-<!-- 特に最近重要性が増してるって話 -->
+<!-- ピークパフォーマンスに達する前にアプリケーションが終了する -->
 
 ---
 level: 2
@@ -288,16 +280,12 @@ level: 2
 
 ### 注文APIについて考えてみる
 
-<v-clicks>
-
 - 暖機用のユーザ、商品を準備する
 - 自動で注文をキャンセルする仕組みが必要
 - キャンセルを繰り返すユーザに対して罰則があればその対象外とする
 - 検索に載せないなど、一般ユーザには買えない仕組みが欲しい
 - 計測や分析側への影響も考慮する必要あり
 - などなど・・・
-
-</v-clicks>
 
 <!-- ノイズ！ -->
 
@@ -324,7 +312,7 @@ level: 2
 
 ### コードサンプル
 
-```java {*|1-2|3|7-9|4-6|*}
+```java {*|4-6}
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
 	public OrderId create(Order order) {
@@ -349,16 +337,12 @@ hideInToc: true
 
 <br>
 
-### Pros/Cons
-
-<v-clicks>
+### メリ/デメ
 
 - ⭕️ 最も手軽ですぐに始められる
 - 🔺 特殊ルートから先は暖機されないため、その分効果が小さい
-- ❌ 実装・メンテナンスコスト大
+- ❌ <span v-mark.red>実装・メンテナンスコスト大</span>
   - ビジネスロジック（ドメインモデル）に余計な関心ごとが入り込む
-
-</v-clicks>
 
 <br>
 
@@ -366,7 +350,7 @@ hideInToc: true
 
 ### 一言メモ
 
-- 本当にクリティカルな時、小規模かつ暫定的に導入するにとどめましょう
+- 本当にクリティカルな時にだけ、小規模かつ暫定的に導入しましょう
 
 </v-click>
 
@@ -382,7 +366,7 @@ level: 2
 
 ### コードサンプル
 
-```java {*|1,3|2,4-5|7-12|9|11|*}
+```java {*|4,7-12}
 @Configuration
 @RequiredArgsConstructor
 public class WarmupConfiguration {
@@ -413,16 +397,12 @@ hideInToc: true
 
 <br>
 
-### Pros/Cons
-
-<v-clicks>
+### メリ/デメ
 
 - ⭕️ 暖機の関心ごとをクラス毎に切り離せる
 - 🔺 切り替えたクラスから先のコードが異なるため、その分効果が小さい
 - 🔺 実装・メンテナンスコスト中
-- ❌ 該当クラスが呼び出される度にDIされる
-
-</v-clicks>
+- ❌ <span v-mark.red>該当クラスが呼び出される度にDIされる</span>
 
 <br>
 
@@ -430,7 +410,7 @@ hideInToc: true
 
 ### 一言メモ
 
-- こちらもずっと保守していくのは厳しい・・<br>コードは消しやすいので、こちらも暫定的な導入に留めましょう
+- 特殊ルートだらけになりそうな時に選択肢になりうる
 
 </v-click>
 
@@ -446,7 +426,7 @@ level: 2
 
 ### コードサンプル①
 
-```java {*|3|6-7|8|*}
+```java {*|3,6-7}
 @Component
 @RequiredArgsConstructor
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
@@ -461,8 +441,6 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 
 [Class AbstractRoutingDataSource](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/datasource/lookup/AbstractRoutingDataSource.html)
 
-<!-- 自前でシャーディングする時とかに使ってる模様 -->
-
 ---
 level: 2
 hideInToc: true
@@ -476,7 +454,7 @@ hideInToc: true
 
 ### コードサンプル②
 
-```java {*|3|11-13|15-16|*}
+```java {*|12-15}
 @Configuration
 @RequiredArgsConstructor
 public class DynamicDataSourceConfiguration {
@@ -499,6 +477,8 @@ public class DynamicDataSourceConfiguration {
 }
 ```
 
+<!-- 自前でシャーディングする時とかに使ってる模様 -->
+
 ---
 level: 2
 hideInToc: true
@@ -510,16 +490,12 @@ hideInToc: true
 
 <br>
 
-### Pros/Cons
-
-<v-clicks>
+### メリ/デメ
 
 - ⭕️ データを自由に準備できるため、暖機の自由度が高い
 - ⭕️ 暖機効果が大きい
 - ⭕️ 実装・メンテナンスコスト小
-- ❌ インフラの整備が必要
-
-</v-clicks>
+- ❌ <span v-mark.red>インフラの整備が必要</span>
 
 <br>
 
@@ -564,8 +540,6 @@ layout: section
 ---
 
 # ランタイムが提供する<br>アプローチ
-
-<!-- Javaとしても長年コールドスタートに対して課題感を持っていました -->
 
 ---
 level: 2
@@ -621,14 +595,14 @@ hideInToc: true
 
 <br>
 
-### Pros/Cons
+### メリ/デメ
 
 - ⭕️ 起動時間の削減
-- ⭕️ 初回リクエストの遅延の緩和
+- ⭕️ 初回リクエストの遅延緩和
 - ⭕️ 制限事項が少なく、導入コストは低め
 - 🔺 ピークパフォーマンスに達するまでの時間へのアプローチではない
 - 🔺 後述のアプローチに比べると効果は控えめ
-  - 実体験で30%程度の削減効果でした
+  - <span v-mark.red>実体験で約30%ほどの削減効果がありました</span>
 
 <!-- 最初に試す価値はある -->
 
@@ -683,14 +657,14 @@ hideInToc: true
 
 <br>
 
-### Pros/Cons
+### メリ/デメ
 
 - ⭕️ 起動時間の大幅な削減
 - ⭕️ 起動直後からピークパフォーマンス
 - 🔺 利用しているライブラリがちゃんと動くかは要検証
   - [Libraries and Frameworks Tested with Native Image](https://www.graalvm.org/native-image/libraries-and-frameworks/)
 - 🔺 コンパイルに時間がかかり、開発体験が変わる
-- ❌ アプリケーションの規模などにもよるが、移行のハードルは高め
+- ❌ <span v-mark.red>アプリケーションの規模などにもよるが、移行のハードルは高め</span>
   - リフレクションのように実行時に決まる要素については、コンパイル時に明示的に指定する必要がある
 
 <!-- 時間短縮オプション (-Ob) とデフォルト (-O2) <br>手元の環境では、Hello Worldレベルのコード（2分）が54秒ぐらいになった -->
@@ -708,7 +682,7 @@ level: 2
 ### Java
 
 - [CRaC Project](https://wiki.openjdk.org/display/crac)、[CRaC/docs](https://github.com/CRaC/docs)
-  - アプリケーションのチェックポイントを作成し、復元する形で起動できる
+  - <span v-mark.red>アプリケーションのチェックポイントを作成し、復元する形で起動できる</span>
   - 現時点だと、Azul Zulu、Liberica JDKで利用可能
 
 <br>
@@ -752,7 +726,7 @@ hideInToc: true
 
 <br>
 
-### Pros/Cons
+### メリ/デメ
 
 - ⭕️ 起動時間の大幅な削減
 - ⭕️ ピークパフォーマンスに達するまでの時間
@@ -760,7 +734,7 @@ hideInToc: true
 - 🔺 チェックポイント作成時にDB接続やファイルハンドルを閉じる必要がある
 - 🔺 シークレットな情報がスナップショットに含まれるリスクがある
 - ❌ Linux KernelのCheckpoint/Restore in Userspace（CRIU）を利用するため、実行環境に依存する
-  - CRIUの特権操作が必要になる
+  - <span v-mark.red>特権操作が必要になるため、プラットフォームによっては利用できない</span>
 
 <!-- ライフサイクルが複雑になり、CI/CDに組み込む難易度が高い -->
 
@@ -799,15 +773,11 @@ level: 2
 
 <br>
 
-- 暖機運転は可能な限り行うのが望ましい。<br>しかし、自力で頑張るのは痛みが伴う場合があるので、<br><span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
+- 暖機運転は可能な限り行うのが望ましい。<br>ただし、自力で頑張るのは痛みが伴う場合があるので、<br><span v-mark.red>コストやリスクのトレードオフを考慮し、本当に必要なところだけ導入する</span>
 - コールドスタートに対するランタイムのアプローチは複数存在するが、<br>こちらもそれぞれ<span v-mark.circle.orange>制約</span>があるため、しっかりと見極めた上で選択する
 - Javaの今後の進化に期待しましょう！！
 
 <img src="/Wave.png" width="150" height="200" class="absolute right-20 bottom-10"/>
-
-<!-- 現時点ではクリティカルなタイムアウト等は発生していないため、<br>
-いざという時の手札を揃えておきつつ、<br>
-CRaCやProject Leydenの動向をチェックしている状況です。 -->
 
 ---
 layout: center
