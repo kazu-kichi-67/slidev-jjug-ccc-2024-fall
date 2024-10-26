@@ -256,7 +256,7 @@ hideInToc: true
 - <span v-mark.red>ユーザーからのリクエストを受け付ける前に、実際にAPIを呼び出してあげる</span>
   - 一例として、
   - Spring Boot Actuatorでアプリケーションの状態を可視化
-  - kubernetesのStartup Probeでリクエストを投げる
+  - KubernetesのStartup Probeでリクエストを投げる
 - 参照系は比較的容易、では<span v-mark.circle.orange>更新系</span>は？
 
 <br>
